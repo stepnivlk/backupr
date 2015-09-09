@@ -1,6 +1,6 @@
 require 'date'
-require './zabbix'
-require './mikrotik'
+require './zabbix_hosts_miner'
+require './mikrotik_backup'
 
 DATE = Date.today
 BASE_FILE_NAME = DATE.strftime("%d-%m-%Y")
@@ -18,7 +18,7 @@ zabbix_config = { url: "http://zabbix.ernet/api_jsonrpc.php",
 class Backupr
   def initialize(config, zabbix_config, dir)
     @config = config
-    @zabbix = ZabbixGet.new(zabbix_config[:url], 
+    @zabbix = ZabbixHostsMiner.new(zabbix_config[:url], 
                            zabbix_config[:user], zabbix_config[:password])    
   end
 

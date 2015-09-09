@@ -1,4 +1,4 @@
-module SecureNet
+module SecNetCommands
 	require 'net/ssh'
 	require 'net/scp'
 
