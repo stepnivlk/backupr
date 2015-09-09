@@ -22,7 +22,7 @@ class Backupr
 													 zabbix_config[:user], zabbix_config[:password])		
 	end
 
-	def backupr(delete_old = true)
+	def start(delete_old = true)
 		get_backup_ips
 		check_or_create_group_dirs
 		check_or_create_group_ips_dirs
