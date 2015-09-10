@@ -1,18 +1,20 @@
-backup_directory: /home/hex/backup/
-date_format: "%d-%m-%Y"
-zabbix:
+:backup_directory: /home/hex/backup/
+:date_format: "%d-%m-%Y"
+:zabbix:
   :use: true
   :url: http://zabbix.ernet/api_jsonrpc.php
   :user: Admin
   :password: zabbix
-groups:
-  mikrotik:
+:groups:
+  :mikrotik:
     :use: true
-    :name:
-    :user:
-    :password:
-    :backup_format:
-  ubiquiti:
+    :name: mikrotik
+    :user: backup
+    :password: backpwd
+    :backup_format: :both
+    :delete_old: true
+    :delete_older_than_days: 14
+  :ubiquiti:
     :use: false
-  linux:
+  :linux:
     :use: false

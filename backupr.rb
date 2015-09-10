@@ -1,17 +1,18 @@
 require './main_backup' 
 require 'yaml'
 
-DATE = Date.today
-BASE_FILE_NAME = DATE.strftime("%d-%m-%Y")
-WORKING_DIRECTORY = "/"
+# BackupR by StepniVlk
+# version: 0.2.1
 
-c = { mikrotik: {name: "mikrotik", user: "xx", password: "yy", 
-                      backup_format: :both, filenames: BASE_FILE_NAME}, 
-           ubiquiti: {name: "ubiquiti", user: "xx", password: "yy"},
-           linux: {name: "linux", user: "xx", password: "yy"} }
+begin
+  if config = YAML.load_file('config.yml')
+   config[:backup_directory].insert(-1, "/") unless config[:backup_directory][-1] == "/"
+   puts "Config file loaded and checked!"
+  end 
+rescue Exception => error
+  puts error.message
+end
 
 
-zabbix_config = { url: "http://zabbix.ernet/api_jsonrpc.php",
-                  user: "Admin", password: "zabbix" }
-
-config = YAML.load_file('config.yml')
+backupr = MainBackup.new(config)
+backupr.start
