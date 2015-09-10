@@ -2,7 +2,7 @@
 :date_format: "%d-%m-%Y"
 :zabbix:
   :use: true
-  :url: http://zabbix.ernet/api_jsonrpc.php
+  :url: http://domain/api_jsonrpc.php
   :user: Admin
   :password: zabbix
 :groups:
