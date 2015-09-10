@@ -1,3 +1,4 @@
+# Handles commands to hosts through SSH and SCP.
 module SecNetCommands
   require 'net/ssh'
   require 'net/scp'
