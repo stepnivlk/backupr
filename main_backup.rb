@@ -38,7 +38,7 @@ class MainBackup
     end
   end
 
- # private
+ private
       # gets array of IPs from zabbix and adds them to config hash.
       def zabbix_get_backup_ips
         @config[:groups].each do |key, value|
