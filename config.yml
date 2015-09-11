@@ -5,7 +5,7 @@
 # Configuration of Zabbix API connection
 :zabbix:
   :enable: true
-  :url: http://zabbix.ernet/api_jsonrpc.php
+  :url: http://domain.domain/api_jsonrpc.php
   :user: Admin
   :password: zabbix
 # Groups of hosts to backup
@@ -13,8 +13,8 @@
   :mikrotik:
     :enable: false
     :name: mikrotik
-    :user: admin
-    :password: newMaster
+    :user: backup
+    :password: backpwd
     # Backup format options:
     # :binary - performs full binary backup (/system backup)
     # :export - exports text configuration (/export)
@@ -28,7 +28,7 @@
     :enable: true
     :name: ubiquiti
     :user: ubnt
-    :password: ernet123
+    :password: ubnt
     # deletes old files when true
     :delete_old: true
     # delete only files older than value
