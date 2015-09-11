@@ -3,9 +3,9 @@ module SecNetCommands
   require 'net/ssh'
   require 'net/scp'
 
-  def connect_to_host(host, user, password)
+  def connect_to_host(host, user, password, ssh = true)
     begin
-      @ssh = Net::SSH.start(host, user, password: password)
+      @ssh = Net::SSH.start(host, user, password: password) if ssh == true
       @host = host
       @user = user
       @password = password
