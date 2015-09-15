@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require './helper_modules'
-require './main_backup' 
+require 'lib/helper_modules'
+require 'lib/main_backup' 
 require 'yaml'
 require 'optparse'
 require 'date'
