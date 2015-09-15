@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
                       hostgroup, through Zabbix API.}
   s.files         = `git ls-files`.split($\)
   s.require_paths = ["lib"]
-  s.executables   = ["backupr.rb"]
+  s.executables   = ["backupr"]
   s.add_dependency("zabbixapi")
 end
