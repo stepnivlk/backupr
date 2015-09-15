@@ -5,7 +5,7 @@
 # Configuration of Zabbix API connection
 :zabbix:
   :enable: true
-  :url: http://domain.domain/api_jsonrpc.php
+  :url: http://zabbix.ernet/api_jsonrpc.php
   :user: Admin
   :password: zabbix
 # Groups of hosts to backup
@@ -13,8 +13,8 @@
   :mikrotik:
     :enable: true
     :name: mikrotik
-    :user: backup
-    :password: backpwd
+    :user: admin
+    :password: newMaster
     # Backup format options:
     # :binary - performs full binary backup (/system backup)
     # :export - exports text configuration (/export)

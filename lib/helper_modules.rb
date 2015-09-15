@@ -51,9 +51,11 @@ module Loggers
 end
 
 module Checkers
+  require 'yaml'
+  
   class ConfigChecker
     attr_reader :config
-    
+
     def initialize(options)
       @options = options
     end

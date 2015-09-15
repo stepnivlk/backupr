@@ -1,4 +1,4 @@
-require './helper_modules'
+require 'helper_modules'
 
 module MikrotikTarget 
   class MikrotikBackup

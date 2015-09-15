@@ -1,7 +1,8 @@
 require 'date'
-require './source_modules'
-require './target_modules'
-require './helper_modules'
+
+require 'source_modules'
+require 'target_modules'
+require 'helper_modules'
 
 # Contains main logic behind whole backup process.
 # All other components are called from this class.

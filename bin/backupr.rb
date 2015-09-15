@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 
+require '../lib/helper_modules'
+require '../lib/main_backup' 
+require 'yaml'
 require 'optparse'
+require 'date'
 
 # BackupR by StepniVlk
+# version: 0.3.0
 
 # Hash to fill with parser options with default value
 options = {config_path: "/default/path"}
