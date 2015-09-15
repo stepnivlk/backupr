@@ -12,12 +12,12 @@ require 'backupr'
 options = {config_path: "/default/path"}
 
 option_parser = OptionParser.new do |opts|
-  opts.banner = "Usage: backupr.rb [options]"
+  opts.banner = "Usage: backupr [options]"
   opts.on("-c", "--config CONFIG_PATH", "Path to configuration file") do |config_path|
       options[:config_path] = config_path
   end
 
-  opts.on("-g", "--genconfig CONFIG_PATH", "Generate blank config to given path") do
+  opts.on("-g", "--genconfig CONFIG_PATH", "Generate blank config to given path") do |config_path|
     puts "pending..."
     exit
   end
