@@ -3,18 +3,17 @@ require './source_modules'
 require './target_modules'
 require './helper_modules'
 
-DATE = Date.today
-
 # Contains main logic behind whole backup process.
 # All other components are called from this class.
 # Creates directory structure and takes care of deleting old files.
 # Backup targets and sources are objects.
 class MainBackup
   def initialize(config)
+    @date = Date.today
     @config = config
     @zabbix = ZabbixSource::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
                                           @config[:zabbix][:password]) if @config[:zabbix][:enable]
-    @base_file_name = DATE.strftime(@config[:date_format])
+    @base_file_name = @date.strftime(@config[:date_format])
     @working_directory = @config[:backup_directory]
   end
 
@@ -148,7 +147,7 @@ private
 
     # checks if date in given filename is older past_days ago.
     def is_outdated?(days, file)
-      past = DATE - days
+      past = @date - days
       return true if (Date.parse(file) < past)
     end
 
