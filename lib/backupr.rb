@@ -8,7 +8,7 @@ require 'helper_modules'
 # All other components are called from this class.
 # Creates directory structure and takes care of deleting old files.
 # Backup targets and sources are objects.
-class MainBackup
+class Backupr
   def initialize(config)
     @date = Date.today
     @config = config

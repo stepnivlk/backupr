@@ -4,6 +4,7 @@ $:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
 
 require 'optparse'
 require 'helper_modules'
+require 'backupr'
 
 # BackupR by StepniVlk
 
@@ -30,5 +31,5 @@ option_parser.parse!
 
 config_check = Checkers::ConfigChecker.new(options)
 config_check.start
-backup = MainBackup.new(config_check.config)
+backup = Backupr.new(config_check.config)
 backup.start
