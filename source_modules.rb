@@ -1,4 +1,5 @@
 require "zabbixapi"
+require "./helper_modules"
 
 # Zabbix data handling.
 module ZabbixSource
@@ -75,8 +76,8 @@ module ZabbixSource
         @zbx = ZabbixApi.connect(url: @url, 
                                 user: @user, password: @password)
       rescue Exception => error
-        puts "no connection"
-        exit
+        Loggers::Main.log.warn "No connection to Zabbix API. Exiting..."
+        exit 4
       end
     end
 

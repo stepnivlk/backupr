@@ -1,6 +1,7 @@
 require 'date'
 require './source_modules'
 require './target_modules'
+require './helper_modules'
 
 DATE = Date.today
 
@@ -70,7 +71,8 @@ private
       begin
         return true if Dir.chdir(dir)
       rescue Exception => error
-        puts error.message
+        Loggers::Main.log.warn error.message
+        exit 5
       end
     end
 
@@ -111,7 +113,8 @@ private
             end
           rescue Exception => error
             change_dir(@working_directory)
-            puts error.message
+            Loggers::Main.log.warn error.message
+            exit 6
           end
         end
       end
