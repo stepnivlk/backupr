@@ -8,27 +8,26 @@ require 'helper_modules'
 # All other components are called from this class.
 # Creates directory structure and takes care of deleting old files.
 # Backup targets and sources are objects.
-class Backupr
-  def initialize(config)
+class Backupr < Checkers::ConfigChecker
+  def initialize(options)
+    super(options)
     @date = Date.today
-    @config = config
-    @zabbix = ZabbixSource::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
-                                          @config[:zabbix][:password]) if @config[:zabbix][:enable]
-    @base_file_name = @date.strftime(@config[:date_format])
-    @working_directory = @config[:backup_directory]
   end
 
   def start(delete_old = true)
+    load_config
+
+    @zabbix = ZabbixSource::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
+                                               @config[:zabbix][:password]) if @config[:zabbix][:enable]
+    @base_file_name = @date.strftime(@config[:date_format])
+    @working_directory = @config[:backup_directory]
+
     zabbix_get_backup_ips if @zabbix
     check_or_create_working_dir
     check_or_create_group_dirs
     check_or_create_group_ips_dirs
     backup_mikrotik if is_group_enabled?(:mikrotik)
     backup_ubiquiti if is_group_enabled?(:ubiquiti)
-  end
-
-  def to_s
-    puts @zabbix
   end
 
 private

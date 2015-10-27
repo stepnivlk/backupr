@@ -1,4 +1,5 @@
 require 'helper_modules'
+require 'rsync'
 
 module MikrotikTarget 
   class MikrotikBackup
@@ -90,6 +91,18 @@ module UbiquitiTarget
         puts "[U] #{hostip}: #{@name}.cfg downloaded" if download_file(local_path + @name + ".cfg" , "/tmp/system.cfg")
 
       end
+    end
+  end
+end
+
+module LinuxTarget
+  class LinuxBackup
+    def initialize(hostips, password, path_prefix, filenames)
+
+    end
+
+    def set_env_password 
+      
     end
   end
 end

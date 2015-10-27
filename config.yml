@@ -12,6 +12,8 @@
 :groups:
   :mikrotik:
     :enable: true
+    # Name of hostgroup to backup (containing only hosts of type Mikrotik).
+    # Name must match hostgroup name on Zabbix server.
     :name: mikrotik
     :user: backup
     :password: backpwd
@@ -26,6 +28,8 @@
     :delete_older_than_days: 14
   :ubiquiti:
     :enable: false
+    # Name of hostgroup to backup (containing only hosts of type Ubiquiti).
+    # Name must match hostgroup name on Zabbix server.
     :name: ubiquiti
     :user: ubnt
     :password: ubnt

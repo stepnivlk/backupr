@@ -66,12 +66,24 @@ module Checkers
       return true
     end
 
+    def load_config
+      config_exists?
+      if @config = YAML.load_file(@options[:config_path])
+        check_config
+        Loggers::Main.log.info "Config file loaded and checked!"
+        return true
+      else
+        Loggers::Main.log.fatal "Wrong/corrupted config file!"
+        exit 2
+      end
+    end
+    
     def config_exists?
       unless File.exists?(@options[:config_path])
         Loggers::Main.log.fatal "Non existent config file given!"
         exit 1
       end
-      return true
+      return options
     end
 
     def check_config
@@ -95,16 +107,6 @@ module Checkers
       end
     end
 
-    def load_config
-      if @config = YAML.load_file(@options[:config_path])
-        check_config
-        Loggers::Main.log.info "Config file loaded and checked!"
-        return true
-      else
-        Loggers::Main.log.fatal "Wrong/corrupted config file!"
-        exit 2
-      end
-    end
 
   end
 

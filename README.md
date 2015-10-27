@@ -18,3 +18,4 @@ Usage: backupr [options]
     -h, --help                       Display this screen
 ```
 Check example config.yml. You have to specify Zabbix API url, user, password and enable at least one host group.
+
