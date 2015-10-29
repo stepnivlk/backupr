@@ -11,7 +11,7 @@
 # Groups of hosts to backup
 :groups:
   :mikrotik:
-    :enable: true
+    :enable: false
     # Name of hostgroup to backup (containing only hosts of type Mikrotik).
     # Name must match hostgroup name on Zabbix server.
     :name: mikrotik
@@ -38,4 +38,13 @@
     # delete only files older than value
     :delete_older_than_days: 14
   :linux:
-    :enable: false
+    :enable: true
+    # Name of hostgroup to backup (containing only hosts of type Mikrotik).
+    # Name must match hostgroup name on Zabbix server.
+    :name: linux
+    :password: test
+    # deletes old files when true
+    :delete_old: true
+    # delete only files older than value
+    :delete_older_than_days: 14
+    :args: "-rtv"

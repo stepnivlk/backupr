@@ -30,7 +30,8 @@ module SecNetCommands
       @ssh.close
       return true
     rescue Exception => error
-      return "already disconnected"
+      Loggers::Main.log.warn error.message
+      return false
     end
   end
 end
@@ -77,7 +78,7 @@ module Checkers
         exit 2
       end
     end
-    
+
     def config_exists?
       unless File.exists?(@options[:config_path])
         Loggers::Main.log.fatal "Non existent config file given!"

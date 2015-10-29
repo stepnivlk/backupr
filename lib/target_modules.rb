@@ -1,7 +1,7 @@
 require 'helper_modules'
 require 'rsync'
 
-module MikrotikTarget 
+module Target 
   class MikrotikBackup
     
     include SecNetCommands
@@ -21,26 +21,26 @@ module MikrotikTarget
         # whole path to each host directory (IP)
         local_path = @path_prefix + hostip.gsub(/[.]/, '-') + "/"
 
-        puts "[M] #{hostip}: connected" if connect_to_host(hostip, @user, @password)
+        Loggers::Main.log.info "[M] #{hostip}: connected" if connect_to_host(hostip, @user, @password)
 
         case format
         when :binary
           mk_backup(hostip, :binary)
           if download == true && download_file(local_path, @name + ".backup")
-            puts "[M] #{hostip}: #{@name}.backup downloaded"
+            Loggers::Main.log.info "[M] #{hostip}: #{@name}.backup downloaded"
             mk_delete(hostip, @name + ".backup") if del_after_down == true
           end
         when :export
           mk_backup(hostip, :export)
           if download == true && download_file(local_path, @name + ".rsc")
-            puts "[M]: #{hostip}: #{@name}.rsc downloaded" 
+            Loggers::Main.log.info "[M]: #{hostip}: #{@name}.rsc downloaded" 
           end
         when :both
           mk_backup(hostip, :binary)
           mk_backup(hostip, :export)
           if download == true
-            puts "[M] #{hostip}: #{@name}.backup downloaded" if download_file(local_path, @name + ".backup")
-            puts "[M] #{hostip}: #{@name}.rsc downloaded" if download_file(local_path, @name + ".rsc")
+            Loggers::Main.log.info "[M] #{hostip}: #{@name}.backup downloaded" if download_file(local_path, @name + ".backup")
+            Loggers::Main.log.info "[M] #{hostip}: #{@name}.rsc downloaded" if download_file(local_path, @name + ".rsc")
           end
         end
 
@@ -54,22 +54,20 @@ module MikrotikTarget
 
         def mk_backup(hostip, format)
           if format == :binary
-            puts "#{hostip}: #{@name}.backup saved" if send_command("/system backup save name=#{@name}")
+            Loggers::Main.log.info "#{hostip}: #{@name}.backup saved" if send_command("/system backup save name=#{@name}")
           elsif format == :export
             send_command("/export file=#{@name}")
-            puts "#{hostip}: #{@name}.rsc saved"
+            Loggers::Main.log.info "#{hostip}: #{@name}.rsc saved"
           end
         end
 
         def mk_delete(hostip, file)
           send_command("/file remove \"#{file}\"")
-          puts "#{hostip}: #{file} deleted from host"
+          Loggers::Main.log.info "#{hostip}: #{file} deleted from host"
         end
 
   end
-end
 
-module UbiquitiTarget
   class UbiquitiBackup
     include SecNetCommands
 
@@ -88,21 +86,39 @@ module UbiquitiTarget
         # whole path to each host directory (IP)
         local_path = @path_prefix + hostip.gsub(/[.]/, '-') + "/"
         connect_to_host(hostip, @user, @password, ssh = false)
-        puts "[U] #{hostip}: #{@name}.cfg downloaded" if download_file(local_path + @name + ".cfg" , "/tmp/system.cfg")
-
+        Loggers::Main.log.info "[U] #{hostip}: #{@name}.cfg downloaded" if download_file(local_path + @name + ".cfg" , "/tmp/system.cfg")
       end
     end
   end
-end
 
-module LinuxTarget
   class LinuxBackup
-    def initialize(hostips, password, path_prefix, filenames)
+    def initialize(hostips, password, path_prefix, filenames, args)
+      @hostips = hostips
+      @password = password
+      @path_prefix = path_prefix
+      @name = filenames
+      @args = args
+      @hosts_with_modules = {}
+    end
+
+    def set_env_password(password)
+      ENV['RSYNC_PASSWORD']=password
+    end
+
+    def get_backup_modules
+      @hostips.each do |hostip|
+        @hosts_with_modules[hostip] = Rsync.run("rsync://#{hostip}", "").list_modules.keys
+      end
+    end
+
+    def backup_hosts
 
     end
 
-    def set_env_password 
-      
+    def to_s
+      @hosts_with_modules
     end
+
   end
+
 end

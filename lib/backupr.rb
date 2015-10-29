@@ -38,7 +38,7 @@ private
     def backup_mikrotik
       config = @config[:groups][:mikrotik]
 
-      mikrotik = MikrotikTarget::MikrotikBackup.new(config[:ips], config[:user], config[:password], 
+      mikrotik = Target::MikrotikBackup.new(config[:ips], config[:user], config[:password], 
                                     @working_directory + config[:name] + "/", @base_file_name)
 
       mikrotik.backup_hosts(config[:backup_format])        
@@ -48,7 +48,7 @@ private
     def backup_ubiquiti
       config = @config[:groups][:ubiquiti]
 
-      ubiquiti = UbiquitiTarget::UbiquitiBackup.new(config[:ips], config[:user], config[:password], 
+      ubiquiti = Target::UbiquitiBackup.new(config[:ips], config[:user], config[:password], 
                                     @working_directory + config[:name] + "/", @base_file_name)
       ubiquiti.backup_hosts
       delete_older_than(config[:name], config[:delete_older_than_days]) if config[:delete_old]
@@ -56,10 +56,10 @@ private
 
     # gets array of IPs from zabbix and adds them to config hash.
     def zabbix_get_backup_ips
-      @config[:groups].each do |key, value|
-        if value[:enable]
-          ips = @zabbix.get_ips_by_group(value[:name])
-          @config[:groups][key.to_sym][:ips] = ips
+      @config[:groups].each do |group, parameter|
+        if parameter[:enable]
+          ips = @zabbix.get_ips_by_group(parameter[:name])
+          @config[:groups][group.to_sym][:ips] = ips
         end
       end
       return @config
