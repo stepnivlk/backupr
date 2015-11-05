@@ -1,8 +1,14 @@
+require 'backupr/version'
+require 'backupr/sources'
+require 'backupr/targets'
+require 'backupr/helpers'
 require 'date'
-
-require 'source_modules'
-require 'target_modules'
-require 'helper_modules'
+require 'net/ssh'
+require 'net/scp'
+require "zabbixapi"
+require 'rsync'
+require 'logger'
+require 'yaml'
 
 # Contains main logic behind whole backup process.
 # All other components are called from this class.
@@ -17,7 +23,7 @@ class Backupr < Checkers::ConfigChecker
   def start(delete_old = true)
     load_config
 
-    @zabbix = ZabbixSource::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
+    @zabbix = Sources::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
                                                @config[:zabbix][:password]) if @config[:zabbix][:enable]
     @base_file_name = @date.strftime(@config[:date_format])
     @working_directory = @config[:backup_directory]
@@ -38,7 +44,7 @@ private
     def backup_mikrotik
       config = @config[:groups][:mikrotik]
 
-      mikrotik = Target::MikrotikBackup.new(config[:ips], config[:user], config[:password], 
+      mikrotik = Targets::MikrotikBackup.new(config[:ips], config[:user], config[:password], 
                                     @working_directory + config[:name] + "/", @base_file_name)
 
       mikrotik.backup_hosts(config[:backup_format])        
@@ -48,7 +54,7 @@ private
     def backup_ubiquiti
       config = @config[:groups][:ubiquiti]
 
-      ubiquiti = Target::UbiquitiBackup.new(config[:ips], config[:user], config[:password], 
+      ubiquiti = Targets::UbiquitiBackup.new(config[:ips], config[:user], config[:password], 
                                     @working_directory + config[:name] + "/", @base_file_name)
       ubiquiti.backup_hosts
       delete_older_than(config[:name], config[:delete_older_than_days]) if config[:delete_old]

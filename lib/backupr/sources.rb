@@ -1,6 +1,6 @@
 # Zabbix data handling.
-module ZabbixSource
-  require "zabbixapi"
+module Sources
+  
 
   # Gets various data from Zabbix API.
   # Primary purpose is mining host IPs array based on given hostgroup name.

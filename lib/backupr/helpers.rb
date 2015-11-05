@@ -1,8 +1,7 @@
 
 # Handles commands to hosts through SSH and SCP.
 module SecNetCommands
-  require 'net/ssh'
-  require 'net/scp'
+
 
   def connect_to_host(host, user, password, ssh = true)
     begin
@@ -37,7 +36,7 @@ module SecNetCommands
 end
 
 module Loggers
-  require 'logger'
+  
 
   class Main
     def self.log
@@ -52,7 +51,7 @@ module Loggers
 end
 
 module Checkers
-  require 'yaml'
+  
   
   class ConfigChecker
     attr_reader :config
@@ -84,7 +83,7 @@ module Checkers
         Loggers::Main.log.fatal "Non existent config file given!"
         exit 1
       end
-      return options
+      return @options
     end
 
     def check_config

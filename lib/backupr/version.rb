@@ -1,3 +1,3 @@
-module Backupr
+module BackuprVersion
   VERSION = '0.3.5'
 end

@@ -1,7 +1,6 @@
-require 'helper_modules'
-require 'rsync'
+require_relative 'helpers'
 
-module Target 
+module Targets
   class MikrotikBackup
     
     include SecNetCommands
@@ -54,16 +53,16 @@ module Target
 
         def mk_backup(hostip, format)
           if format == :binary
-            Loggers::Main.log.info "#{hostip}: #{@name}.backup saved" if send_command("/system backup save name=#{@name}")
+            Loggers::Main.log.info "[M] #{hostip}: #{@name}.backup saved" if send_command("/system backup save name=#{@name}")
           elsif format == :export
             send_command("/export file=#{@name}")
-            Loggers::Main.log.info "#{hostip}: #{@name}.rsc saved"
+            Loggers::Main.log.info "#[M] {hostip}: #{@name}.rsc saved"
           end
         end
 
         def mk_delete(hostip, file)
           send_command("/file remove \"#{file}\"")
-          Loggers::Main.log.info "#{hostip}: #{file} deleted from host"
+          Loggers::Main.log.info "#[M] {hostip}: #{file} deleted from host"
         end
 
   end
@@ -105,8 +104,8 @@ module Target
       ENV['RSYNC_PASSWORD']=password
     end
 
-    def get_backup_modules
-      @hostips.each do |hostip|
+    def get_backup_modules(hostips)
+      hostips.each do |hostip|
         @hosts_with_modules[hostip] = Rsync.run("rsync://#{hostip}", "").list_modules.keys
       end
     end
