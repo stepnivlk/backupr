@@ -1,5 +1,5 @@
 # Main backup directory
-:backup_directory: /home/hex/backup/
+:backup_directory: /backup/
 # Date formatting used to create file name
 :date_format: "%d-%m-%Y"
 # Configuration of Zabbix API connection

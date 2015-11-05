@@ -1,4 +1,5 @@
 require_relative 'helpers'
+require 'rsync'
 
 module Targets
   class MikrotikBackup
@@ -111,11 +112,12 @@ module Targets
     end
 
     def backup_hosts
-
-    end
-
-    def to_s
-      @hosts_with_modules
+      local_path = @path_prefix + hostip.gsub(/[.]/, '-') + "/"
+      @hosts_with_modules.each do |host, modules|
+        modules.each do |modul|
+          Rsync.run("#{host}::#{modul}", local_path)
+        end
+      end
     end
 
   end

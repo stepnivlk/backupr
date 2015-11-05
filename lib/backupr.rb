@@ -14,14 +14,15 @@ require 'yaml'
 # All other components are called from this class.
 # Creates directory structure and takes care of deleting old files.
 # Backup targets and sources are objects.
-class Backupr < Checkers::ConfigChecker
+class Backupr
+  include ConfigChecker
+  
   def initialize(options)
-    super(options)
     @date = Date.today
+    @config = load_config(options)
   end
 
   def start(delete_old = true)
-    load_config
 
     @zabbix = Sources::ZabbixHostsMiner.new(@config[:zabbix][:url], @config[:zabbix][:user], 
                                                @config[:zabbix][:password]) if @config[:zabbix][:enable]
@@ -90,7 +91,7 @@ private
           return true if Dir.exists?(@working_directory)
         end
       end
-      return false unless File.writable?(@working_directory) 
+      Loggers::Main.log.warn "Creation of #{@working_directory} failed!"
     end
 
     # Create directories of groups from config.
@@ -131,7 +132,6 @@ private
     # Deletes only files matching pattern. 
     # Works by printing directory structure into arrays.
     def delete_older_than(group, days = 14)
-
       change_dir(@working_directory + group.to_s)
       dirs = Dir.glob('*').select { |f| File.directory?(f) }
       dirs.each do |dir|
@@ -148,7 +148,6 @@ private
           change_dir(@working_directory + group.to_s)
         end
       end
-
     end
 
     # checks if date in given filename is older past_days ago.
