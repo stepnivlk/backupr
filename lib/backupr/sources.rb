@@ -1,7 +1,5 @@
-# Zabbix data handling.
-module Sources
+module Backupr
   
-
   # Gets various data from Zabbix API.
   # Primary purpose is mining host IPs array based on given hostgroup name.
   class ZabbixHostsMiner
@@ -9,7 +7,7 @@ module Sources
     def initialize(zabbix_api_url, zabbix_user, zabbix_password)
       @url = zabbix_api_url
       @user = zabbix_user
-      @password =zabbix_password
+      @password = zabbix_password
       connect
       get_all_groups
     end
@@ -59,51 +57,43 @@ module Sources
       end
     end
 
-    def print_groups
-      @groups
-    end
-
-    def print_zbx
-      @zbx
-    end
-
-
     private
 
-    def connect
-      begin
-        @zbx = ZabbixApi.connect(url: @url, 
-                                user: @user, password: @password)
-      rescue Exception => error
-        Loggers::Main.log.warn "No connection to Zabbix API. Exiting..."
-        exit 4
-      end
-    end
-
-    # Returns array of all hostgroups on Zabbix.
-    # empty_size determines how many sequential empty group arrays are considered
-    # as end of main array.
-    def get_all_groups(empty_size = 2)
-      @groups = []
-      iter = 1
-      empty_buffer = 0
-
-      loop do
-        group = @zbx.query( method: "hostgroup.get", params: {"output" => "extend", "groupids" => [iter] } )
-        iter += 1
-
-        if group != []
-          @groups.push(group)
-        else
-          empty_buffer += 1
-        end
-
-        if empty_buffer > empty_size
-          break
+      def connect
+        begin
+          @zbx = ZabbixApi.connect(url: @url, 
+                                  user: @user, password: @password)
+        rescue Exception => error
+          Loggers::Main.log.warn "No connection to Zabbix API. Exiting..."
+          exit 4
         end
       end
-      return true if @groups.size > 0
-    end
+
+      # Returns array of all hostgroups on Zabbix.
+      # empty_size determines how many sequential empty group arrays are considered
+      # as end of main array.
+      def get_all_groups(empty_size = 2)
+        @groups = []
+        iter = 1
+        empty_buffer = 0
+
+        loop do
+          group = @zbx.query( method: "hostgroup.get", params: {"output" => "extend", "groupids" => [iter] } )
+          iter += 1
+
+          if group != []
+            @groups << group
+          else
+            empty_buffer += 1
+          end
+
+          if empty_buffer > empty_size
+            break
+          end
+        end
+        return true if @groups.size > 0
+      end
 
   end
+
 end

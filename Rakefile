@@ -7,4 +7,17 @@ end
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+task :default => :tasklist
+
+desc 'Show Rake Tasks (`rake -T`)'
+task :tasklist do
+  exec 'rake -T'
+end
+
+desc 'Open a pry console in the Backup context'
+task :console do
+  require 'pry'
+  require 'backupr'
+  ARGV.clear
+  Pry.start || exit
+end
