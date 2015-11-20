@@ -1,3 +1,5 @@
+
+
 module Backupr
 # Contains main logic behind whole backup process.
 # All other components are called from this class.
@@ -13,48 +15,27 @@ class Base
     @zabbix = ZabbixHostsMiner.new(@config[:zabbix][:url],
                                    @config[:zabbix][:user], 
                                    @config[:zabbix][:password]) if @config[:zabbix][:enable]
-  end
-
-  def start(delete_old = true)
-
-    zabbix_get_backup_ips if @zabbix
-    check_or_create_working_dir
-    check_or_create_group_dirs
-    check_or_create_group_ips_dirs
-
-    backup_ubiquiti if group_enabled?(:ubiquiti)
+    zabbix_get_backup_ips
   end
 
   def mikrotik
-      config = @config[:groups][:mikrotik]
-      config[:ips] = @zabbix.get_ips_by_group(config[:name])
-      mikrotik = MikrotikBackup.new(config)
-      mikrotik.backup_hosts
+    config = @config[:groups][:mikrotik]
+    config[:ips] = @zabbix.get_ips_by_group(config[:name])
+    mikrotik = MikrotikBackup.new(config)
+    mikrotik.backup_hosts
+  end
+
+  def ubiquiti
+    config = @config[:groups][:ubiquiti]
+    config[:ips] = @zabbix.get_ips_by_group(config[:name])
+    ubiquiti= UbiquitiBackup.new(config)
+    ubiquiti.backup_hosts
   end
 
   private
 
   def group_enabled?(group)
     return true if @config[:groups][group.to_sym][:enable] && !@config[:groups][group.to_sym][:ips].nil?
-  end
-
-  def backup_mikrotik
-    config = @config[:groups][:mikrotik]
-
-    mikrotik = MikrotikBackup.new(config[:ips], config[:user], config[:password], 
-                                  @working_directory + config[:name] + "/", @base_file_name)
-
-    mikrotik.backup_hosts(config[:backup_format])        
-    delete_older_than(config[:name], config[:delete_older_than_days]) if config[:delete_old]
-  end
-
-  def backup_ubiquiti
-    config = @config[:groups][:ubiquiti]
-
-    ubiquiti = Targets::UbiquitiBackup.new(config[:ips], config[:user], config[:password], 
-                                  @working_directory + config[:name] + "/", @base_file_name)
-    ubiquiti.backup_hosts
-    delete_older_than(config[:name], config[:delete_older_than_days]) if config[:delete_old]
   end
 
   # gets array of IPs from zabbix and adds them to config hash.
@@ -112,36 +93,6 @@ class Base
     end
     change_dir(@working_directory)
   end
-
-  # Deletes all files in subfolders of given folder(group). 
-  # Checks if that filename is older than days variable with is_outdated? method. 
-  # Deletes only files matching pattern. 
-  # Works by printing directory structure into arrays.
-  def delete_older_than(group, days = 14)
-    change_dir(@working_directory + group.to_s)
-    dirs = Dir.glob('*').select { |f| File.directory?(f) }
-    dirs.each do |dir|
-      if change_dir(dir)
-        files = Dir.glob('*').select { |f| f =~ /^\d{2}\-\d{2}\-\d{4}\.\w{3,6}/ }
-
-        unless files.size == 0
-          files.each do |f| 
-            if is_outdated?(days, f)
-              puts "#{Dir.pwd}: Outdated file #{f} deleted!" if File.delete(f)
-            end
-          end
-        end
-        change_dir(@working_directory + group.to_s)
-      end
-    end
-  end
-
-  # checks if date in given filename is older past_days ago.
-  def is_outdated?(days, file)
-    past = @date - days
-    return true if (Date.parse(file) < past)
-  end
-
 
 
   # Change directory or rescue if not.

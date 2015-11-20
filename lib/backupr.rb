@@ -4,8 +4,8 @@ require 'backupr/sources'
 require 'backupr/targets'
 require 'backupr/helpers'
 require 'date'
-require 'net/ssh'
-require 'net/scp'
+
+
 require "zabbixapi"
 require 'rsync'
 require 'logger'

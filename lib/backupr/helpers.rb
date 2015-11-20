@@ -1,4 +1,6 @@
 require 'logger'
+require 'net/ssh'
+require 'net/scp'
 
 module Backupr
   # Handles commands to hosts through SSH and SCP.
@@ -96,7 +98,7 @@ module Backupr
       # Appends "/" to end of backup_directory, if there is none.
       config[:backup_directory].insert(-1, "/") unless config[:backup_directory][-1] == "/"
       
-      config[:groups].map do |group, value| 
+      config[:groups].each do |group, value| 
         value[:working_directory] = config[:backup_directory] + value[:name] + "/"
         value[:date_format] = config[:date_format]
       end
